@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary> Manages the state of the level </summary>
-public class LevelManager : MonoBehaviour
+public class ScoreManager : MonoBehaviour
 {
-    public int Score { get; private set; }
+    Canvas canvas => FindObjectOfType<Canvas>();
+    Text scoreText => canvas.GetComponentInChildren<Text>();
+    public int score { get; private set; }
     
     void Start()
     {
@@ -14,17 +17,17 @@ public class LevelManager : MonoBehaviour
 
     void Update()
     {
-        
+        scoreText.text = "Score: " + score;
     }
 
     public void IncrementScore()
     {
-        Score++;
+        score++;
     }
 
     public void Reset()
     {
-        Score = 0;
+        score = 0;
         // reset logic
     }
 }
