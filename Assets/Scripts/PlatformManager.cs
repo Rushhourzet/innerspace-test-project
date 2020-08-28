@@ -1,7 +1,7 @@
 ﻿using UnityEditor.Rendering;
 using UnityEngine;
 
-//5 minutes of staring at the screen and contemplating life
+//30 minutes of staring at the screen and contemplating life
 public class PlatformManager : MonoBehaviour
 {
     [SerializeField][Range(0.01f,0.02f)] private float initialSpeed;
@@ -13,7 +13,7 @@ public class PlatformManager : MonoBehaviour
     [SerializeField][Range (minHoleSize, fieldWidth)] private float holeSize;
     [SerializeField][Range(0.8f, 1.2f)] private float spawnStartingFrequency;
     [SerializeField][Range(1f, 1.01f)] private float frequencyIncreaseOverTime;
-    private static Vector3 spawnposition => new Vector3(0.0f, -fieldHeight / 2);
+    private static Vector3 spawnposition => new Vector3(0.0f, -(fieldHeight-0.4f) / 2);
 
     private int platformCounter;
     private float timeSinceLastSpawn;
@@ -58,7 +58,7 @@ public class PlatformManager : MonoBehaviour
     private void FixedUpdate() {
         timeSinceLastSpawn += Time.fixedDeltaTime;
         float frequency = spawnStartingFrequency / Mathf.Pow(frequencyIncreaseOverTime, platformCounter);
-        //30 mins of playing around with frequency values
+        //30 mins of playing around with frequency values, also doubled gravity
         if (frequency < 0.5f) frequency = 0.5f; //i think this can be done more performant? outside of update
         if(timeSinceLastSpawn >= frequency) {
             SpawnPlatform(dbg);
@@ -75,32 +75,35 @@ public class PlatformManager : MonoBehaviour
     void SpawnPlatform(debugLogDel callback) {
         GameObject instantiatedPlatform = Instantiate(platformPrefab, spawnposition, new Quaternion(0f, 0f, 0f, 1f), transform);
         instantiatedPlatform.name = platformPrefab.name + platformCounter;
-        RandomizeHole(instantiatedPlatform);
+        RandomizePlatform(instantiatedPlatform);
         callback("Platform has been spawned");
     }
 
 
-    //15 mins + 5 mins
-    void RandomizeHole(GameObject go) {
+    //15 mins + 15mins refactoring
+    void RandomizePlatform(GameObject go) {
         GameObject platformLeft = go.transform.Find("PlatformLeft").gameObject;
         GameObject platformRight = go.transform.Find("PlatformRight").gameObject;
-        BoxCollider collider = go.transform.Find("Collider").GetComponent<BoxCollider>();
-
-        collider.isTrigger = true;
+        BoxCollider scoreCollider = go.transform.Find("Collider").GetComponent<BoxCollider>();
+        scoreCollider.isTrigger = true;
 
         float halfLengthWithoutHole = (fieldWidth - holeSize) / 2;
-        float randomHolePosition = Random.Range(-halfLengthWithoutHole, halfLengthWithoutHole);
-
-        collider.center = new Vector3(randomHolePosition, 0.0f, 0f);
-        collider.size = new Vector3(holeSize, 1f, platformDepth);
-        float platformLengthLeft = halfLengthWithoutHole + randomHolePosition;
-        float platformLengthRight = halfLengthWithoutHole - randomHolePosition;
-        platformLeft.transform.localScale = new Vector3 (platformLengthLeft, 1f, platformDepth);
-        //platformLeft.transform.position = new Vector3(-(platformLengthLeft / 2), platformLeft.transform.position.y);  //mistake in calcs adds onto time
-        platformLeft.transform.position = new Vector3(-(fieldWidth/2) + platformLengthLeft/2, platformLeft.transform.position.y); //fixed in 5 minutes :D
-        platformRight.transform.localScale = new Vector3 (platformLengthRight, 1f, platformDepth);
-        //platformRight.transform.position = new Vector3(platformLengthRight / 2, platformRight.transform.position.y);
-        platformRight.transform.position = new Vector3(fieldWidth / 2 - platformLengthRight / 2, platformLeft.transform.position.y);  
-
+        float holePosition = RandomizeHolePosition(holeSize, scoreCollider, halfLengthWithoutHole);
+        AdjustLeftAndRightPlatform(platformLeft, platformRight, holePosition, halfLengthWithoutHole);
     }
+    private float RandomizeHolePosition(float holeSize, BoxCollider scoreCollider, float halfLengthWithoutHole) {
+        float randomHolePosition = Random.Range(-halfLengthWithoutHole, halfLengthWithoutHole);
+        scoreCollider.center = new Vector3(randomHolePosition, 0.0f, 0f);
+        scoreCollider.size = new Vector3(holeSize, 1f, platformDepth);
+        return randomHolePosition;
+    }
+    private void AdjustLeftAndRightPlatform(GameObject platformLeft, GameObject platformRight, float holePosition, float halfLengthWithoutHole) {
+        float platformLengthLeft = halfLengthWithoutHole + holePosition;
+        float platformLengthRight = halfLengthWithoutHole - holePosition;
+        platformLeft.transform.localScale = new Vector3(platformLengthLeft, 1f, platformDepth);
+        platformLeft.transform.position = new Vector3(-(fieldWidth / 2) + platformLengthLeft / 2, platformLeft.transform.position.y);
+        platformRight.transform.localScale = new Vector3(platformLengthRight, 1f, platformDepth);
+        platformRight.transform.position = new Vector3(fieldWidth / 2 - platformLengthRight / 2, platformLeft.transform.position.y);
+    }
+
 }
