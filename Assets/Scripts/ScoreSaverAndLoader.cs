@@ -27,12 +27,7 @@ public static class ScoreSaverAndLoader {
     public static List<Score> GetScores(Callback callback) {
         string jsonString = System.IO.File.ReadAllText(SAVE_FILE_NAME);
         List<Score> scores = JsonUtility.FromJson<List<Score>>(jsonString);
-        if(scores != null) {
-            callback(true);
-        }
-        else {
-            callback(false);
-        }
+        callback(scores != null);
         return scores;
     }
     public static List<Score> GetScores() {

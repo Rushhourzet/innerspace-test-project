@@ -6,7 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.UI;
 
-//3hr after 3hr of trying to get the board global running i give up q.q
+//3hr after 3hr of trying to get the scire global running i give up q.q
 public class ScoreBoard : MonoBehaviour
 {
     [SerializeField] private Text scoreboardBox;
