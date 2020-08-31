@@ -23,7 +23,7 @@ public class PlatformManager : MonoBehaviour
 
     [SerializeField] private GameObject platformPrefab;
 
-    private ScoreManager levelManager => FindObjectOfType<ScoreManager>();
+    private SessionScore levelManager => FindObjectOfType<SessionScore>();
     private MainCharacter player => FindObjectOfType<MainCharacter>();
 
     //Just recently learned how to use delegates so im using them for Debug.Log just to show that i can use them a bit

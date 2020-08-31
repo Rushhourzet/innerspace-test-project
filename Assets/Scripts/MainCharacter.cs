@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class MainCharacter : MonoBehaviour {
     GameManager gm => FindObjectOfType<GameManager>();
+    SessionScore score => FindObjectOfType<SessionScore>();
     [SerializeField] private float speed;
     GameObject previousObject;
 
     debugLogDel dbg = (messages) => Debug.Log(messages);
     delegate void debugLogDel(string message);
-    void Start() {
-
+    void Start() {       
     }
 
     // Update is called once per frame
@@ -23,10 +23,8 @@ public class MainCharacter : MonoBehaviour {
 
     public void GameOver() {
         //show Game Over screen
-        score.SaveGame();
-        Time.timeScale = 0f;
         dbg("ME DED");
-        Destroy(this.gameObject);
+        gm.GameOver();
     }
 
     public void PlayerHitScoreTrigger() {
