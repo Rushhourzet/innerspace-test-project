@@ -6,14 +6,14 @@ public class PlatformManager : MonoBehaviour
 {
     [SerializeField][Range(0.01f,0.02f)] private float initialSpeed;
     [SerializeField][Range(1f, 1.01f)] private float speedIncreaseOverTime;
-    private const float minHoleSize = 1.2f;
-    private const float platformDepth = 4f;
-    private const float fieldWidth = 11.4f;
-    private const float fieldHeight = 16.4f;
-    [SerializeField][Range (minHoleSize, fieldWidth)] private float holeSize;
+    private const float MIN_HOLE_SIZE = 1.2f;
+    private const float PLATFORM_DEPTH = 4f;
+    private const float FIELD_WIDTH = 11.4f;
+    private const float FIELD_HEIGHT = 16.4f;
+    [SerializeField][Range (MIN_HOLE_SIZE, FIELD_WIDTH)] private float holeSize;
     [SerializeField][Range(0.8f, 1.2f)] private float spawnStartingFrequency;
     [SerializeField][Range(1f, 1.01f)] private float frequencyIncreaseOverTime;
-    private static Vector3 spawnposition => new Vector3(0.0f, -(fieldHeight-0.4f) / 2);
+    private static Vector3 spawnposition => new Vector3(0.0f, -(FIELD_HEIGHT-0.4f) / 2);
 
     private int platformCounter;
     private float timeSinceLastSpawn;
@@ -87,23 +87,23 @@ public class PlatformManager : MonoBehaviour
         BoxCollider scoreCollider = go.transform.Find("Collider").GetComponent<BoxCollider>();
         scoreCollider.isTrigger = true;
 
-        float halfLengthWithoutHole = (fieldWidth - holeSize) / 2;
+        float halfLengthWithoutHole = (FIELD_WIDTH - holeSize) / 2;
         float holePosition = RandomizeHolePosition(holeSize, scoreCollider, halfLengthWithoutHole);
         AdjustLeftAndRightPlatform(platformLeft, platformRight, holePosition, halfLengthWithoutHole);
     }
     private float RandomizeHolePosition(float holeSize, BoxCollider scoreCollider, float halfLengthWithoutHole) {
         float randomHolePosition = Random.Range(-halfLengthWithoutHole, halfLengthWithoutHole);
         scoreCollider.center = new Vector3(randomHolePosition, 0.0f, 0f);
-        scoreCollider.size = new Vector3(holeSize, 1f, platformDepth);
+        scoreCollider.size = new Vector3(holeSize, 1f, PLATFORM_DEPTH);
         return randomHolePosition;
     }
     private void AdjustLeftAndRightPlatform(GameObject platformLeft, GameObject platformRight, float holePosition, float halfLengthWithoutHole) {
         float platformLengthLeft = halfLengthWithoutHole + holePosition;
         float platformLengthRight = halfLengthWithoutHole - holePosition;
-        platformLeft.transform.localScale = new Vector3(platformLengthLeft, 1f, platformDepth);
-        platformLeft.transform.position = new Vector3(-(fieldWidth / 2) + platformLengthLeft / 2, platformLeft.transform.position.y);
-        platformRight.transform.localScale = new Vector3(platformLengthRight, 1f, platformDepth);
-        platformRight.transform.position = new Vector3(fieldWidth / 2 - platformLengthRight / 2, platformLeft.transform.position.y);
+        platformLeft.transform.localScale = new Vector3(platformLengthLeft, 1f, PLATFORM_DEPTH);
+        platformLeft.transform.position = new Vector3(-(FIELD_WIDTH / 2) + platformLengthLeft / 2, platformLeft.transform.position.y);
+        platformRight.transform.localScale = new Vector3(platformLengthRight, 1f, PLATFORM_DEPTH);
+        platformRight.transform.position = new Vector3(FIELD_WIDTH / 2 - platformLengthRight / 2, platformLeft.transform.position.y);
     }
 
 }

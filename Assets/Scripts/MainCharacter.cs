@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MainCharacter : MonoBehaviour {
-    ScoreManager score => FindObjectOfType<ScoreManager>();
+    GameManager gm => FindObjectOfType<GameManager>();
     [SerializeField] private float speed;
     GameObject previousObject;
 
@@ -14,18 +14,8 @@ public class MainCharacter : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update() {
-        /*
-        eww no input manager used x3
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            transform.position += Vector3.left * speed;
-        } else if (Input.GetKey(KeyCode.RightArrow))
-        {
-            transform.position += Vector3.right * speed;
-        }
-        */
-
+    void Update() {        
+        //i prefer to use the unity input manager x3
         //left and right movement
         //5 mins
         transform.position += new Vector3(Input.GetAxis("Horizontal") * speed, 0.0f);
@@ -33,8 +23,9 @@ public class MainCharacter : MonoBehaviour {
 
     public void GameOver() {
         //show Game Over screen
+        score.SaveGame();
         Time.timeScale = 0f;
-        Debug.Log("ME DED");
+        dbg("ME DED");
         Destroy(this.gameObject);
     }
 
@@ -48,7 +39,7 @@ public class MainCharacter : MonoBehaviour {
             GameObject platformMotherClass = other.transform.parent.gameObject;
             if (previousObject == null || platformMotherClass != (previousObject)) {
                 score.IncrementScore();
-                Debug.Log(platformMotherClass.name);
+                //dbg(platformMotherClass.name);
                 previousObject = platformMotherClass;
             }
         }
